@@ -3,32 +3,31 @@
 PATTERN=$(date +"%m,%d")
 FILE=~/Code/lnr/lnr.csv
 
-a_3=$(grep $PATTERN $FILE | awk '{split($0,times,","); print times[3]}')
-a_4=$(grep $PATTERN $FILE | awk '{split($0,times,","); print times[4]}')
-a_5=$(grep $PATTERN $FILE | awk '{split($0,times,","); print times[5]}')
-a_6=$(grep $PATTERN $FILE | awk '{split($0,times,","); print times[6]}')
-a_7=$(grep $PATTERN $FILE | awk '{split($0,times,","); print times[7]}')
-a_8=$(grep $PATTERN $FILE | awk '{split($0,times,","); print times[8]}')
+TODAY=$(grep $PATTERN $FILE)
 
-print_times() {
-    echo "Imsaku: $a_3"
-    echo "Sabahu: $a_4"
-    echo "Yleja: $a_5"
-    echo "Ikindia: $a_6"
-    echo "Akshami: $a_7"
-    echo "Jacia: $a_8"
+echo_prayer_time() {
+    echo $(echo $TODAY | awk '{split($0,times,","); print times['$(($1+3))']}')
 }
 
-if [ $# -eq 0 ]; then
-    print_times
-else
+prayer_times=(
+    $(echo_prayer_time 0)
+    $(echo_prayer_time 1)
+    $(echo_prayer_time 2)
+    $(echo_prayer_time 3)
+    $(echo_prayer_time 4)
+    $(echo_prayer_time 5)
+)
+
+print_times() {
     case $1 in
-        imsak|0)    echo "Imsaku: $a_3";;
-        sabah|1)    echo "Sabahu: $a_4";;
-        yle|2)      echo "Yleja: $a_5";;
-        ikindi|3)   echo "Ikindia: $a_6";;
-        aksham|4)   echo "Akshami: $a_7";;
-        jaci|5)     echo "Jacia: $a_8";;
-        *)          print_times;;
+        imsak|0)    echo "Imsaku: ${prayer_times[0]}";;
+        sabah|1)    echo "Sabahu: ${prayer_times[1]}";;
+        yle|2)      echo "Yleja: ${prayer_times[2]}";;
+        ikindi|3)   echo "Ikindia: ${prayer_times[3]}";;
+        aksham|4)   echo "Akshami: ${prayer_times[4]}";;
+        jaci|5)     echo "Jacia: ${prayer_times[5]}";;
+        *)          print_times 0; print_times 1; print_times 2; print_times 3; print_times 4; print_times 5;;
     esac
-fi
+}
+
+[ $# -eq 0 ] && print_times all || print_times $1
