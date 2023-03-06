@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATTERN=$(date +"%m,%d")
+PATTERN=$(date +"%m,%d,")
 FILE=~/Code/lnr/lnr.csv
 TODAY=$(grep $PATTERN $FILE)
 
