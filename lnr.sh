@@ -26,3 +26,4 @@ print_times() {
 
 # TODO:
     # add default time based on current time
+    # highlight default time
