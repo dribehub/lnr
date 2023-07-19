@@ -5,7 +5,7 @@ FILE=~/Code/lnr/lnr.csv
 TODAY=$(grep $PATTERN $FILE)
 
 echo_prayer_time() {
-    echo $(echo $TODAY | awk '{split($0,times,","); print times['$(($1+3))']}')
+    echo $TODAY | awk '{split($0,times,","); print times['$(($1+3))']}'
 }
 
 print_times() {
