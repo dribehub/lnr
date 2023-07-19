@@ -4,8 +4,26 @@ PATTERN=$(date +"%m,%d,")
 FILE=~/Code/lnr/lnr.csv
 TODAY=$(grep $PATTERN $FILE)
 
+highlight_if_next() {
+    # CURRENT_TIME=$(date +"%H:%M")
+    CURRENT_TIME="21:00"
+    if [[ "$CURRENT_TIME" > "$1" ]] ; then
+        echo "$PRAYER_TIME"
+    else
+        RED='\033[0;31m'
+        GREEN='\033[0;32m'
+        NO_COL='\033[0m'
+        PRAYER_TIME_S=$(date -j -f "%H:%M" $PRAYER_TIME "+%s")
+        CURRENT_TIME_S=$(date -j -f "%H:%M" $CURRENT_TIME "+%s")
+        DIFF=$((($PRAYER_TIME_S - $CURRENT_TIME_S)))
+        DIFF=$(date -j -f "%s" $DIFF "+%H:%M")
+        echo "${GREEN}${PRAYER_TIME}${RED} (-${DIFF})${NO_COL}"
+    fi
+}
+
 echo_prayer_time() {
-    echo $TODAY | awk '{split($0,times,","); print times['$(($1+3))']}'
+    PRAYER_TIME=$(echo $TODAY | awk '{split($0,times,","); print times['$(($1+3))']}')
+    highlight_if_next $PRAYER_TIME
 }
 
 print_times() {
@@ -23,7 +41,3 @@ print_times() {
 [ $# -eq 0 ] && # if no argument is used
     print_times all || # print all praying times
     print_times $1 # else print the indexed praying time
-
-# TODO:
-    # add default time based on current time
-    # highlight default time
