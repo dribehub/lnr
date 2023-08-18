@@ -3,10 +3,11 @@
 PATTERN=$(date +"%m,%d,")
 FILE=~/Code/lnr/lnr.csv
 TODAY=$(grep $PATTERN $FILE)
+COLORED_OUTPUT=1
 
 highlight_if_next() {
-    # CURRENT_TIME=$(date +"%H:%M")
-    CURRENT_TIME="21:00"
+    CURRENT_TIME=$(date +"%H:%M")
+    # CURRENT_TIME="21:00"
     if [[ "$CURRENT_TIME" > "$1" ]] ; then
         echo "$PRAYER_TIME"
     else
@@ -23,7 +24,9 @@ highlight_if_next() {
 
 echo_prayer_time() {
     PRAYER_TIME=$(echo $TODAY | awk '{split($0,times,","); print times['$(($1+3))']}')
-    highlight_if_next $PRAYER_TIME
+    [ $COLORED_OUTPUT -eq 1 ] && # if output is colored
+    highlight_if_next $PRAYER_TIME || # highlight next prayer time
+    echo $PRAYER_TIME # else print output as is
 }
 
 print_times() {
@@ -38,6 +41,12 @@ print_times() {
     esac
 }
 
-[ $# -eq 0 ] && # if no argument is used
-    print_times all || # print all praying times
+if [ $# -eq 0 ]; then # if no argument is used
+    print_times all # print all praying times
+else
+    if [ $1 == "--no-color" ]; then
+        COLORED_OUTPUT=0
+        shift
+    fi
     print_times $1 # else print the indexed praying time
+fi
