@@ -1,9 +1,6 @@
 #!/bin/sh
 
-PATTERN=$(date +"%m,%d,")
-FILE=~/Code/lnr/lnr.csv
-TODAY=$(grep $PATTERN $FILE)
-COLORED_OUTPUT=1
+source "$(dirname "$0")/config.conf"
 
 highlight_if_next() {
     CURRENT_TIME=$(date +"%H:%M")
