@@ -34,6 +34,7 @@ print_times() {
         3) echo "Ikindia: $(echo_prayer_time 3)";;
         4) echo "Akshami: $(echo_prayer_time 4)";;
         5) echo "Jacia: $(echo_prayer_time 5)";;
+        min) for i in {0..5}; do echo -n "$(echo_prayer_time $i) "; done; echo "";;
         *) for i in {0..5}; do print_times $i; done;;
     esac
 }
@@ -41,9 +42,18 @@ print_times() {
 if [ $# -eq 0 ]; then # if no argument is used
     print_times all # print all praying times
 else
-    if [ $1 == "--no-color" ]; then
+    ARGS=""
+    for arg in "$@"; do ARGS="$ARGS$arg"; done
+    
+    if echo "$ARGS" | grep -q "no-color"; then
         COLORED_OUTPUT=0
         shift
     fi
-    print_times $1 # else print the indexed praying time
+    
+    if echo "$ARGS" | grep -q "minimal"; then
+        print_times min
+        shift
+    else
+        print_times $1 # else print the indexed praying time
+    fi
 fi
